@@ -1,0 +1,10 @@
+name = "gold-price-worker"
+main = "src/index.js"
+compatibility_date = "2024-03-09"
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+[[kv_namespaces]]
+binding = "PRICE_STORAGE"
+id = "bb4cd6eaa6c94a3d94f586c08c93cd95"
