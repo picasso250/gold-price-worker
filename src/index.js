@@ -74,7 +74,7 @@ function generateHTML(data) {
       .value { font-size: 1.8rem; font-weight: bold; font-variant-numeric: tabular-nums; }
       .btc { color: #f59e0b; }
       .xaut { color: #fbbf24; }
-      .rmb { color: #10b981; font-size: 1.4rem; }
+      .rmb { color: #10b981; font-size: 1.8rem; }
       .unit { font-size: 0.9rem; margin-left: 4px; color: #64748b; }
       .footer { margin-top: 2rem; font-size: 0.8rem; color: #64748b; text-align: center; border-top: 1px solid #334155; padding-top: 1rem; }
       .status { display: inline-block; width: 8px; height: 8px; background: #22c55e; border-radius: 50%; margin-right: 5px; box-shadow: 0 0 8px #22c55e; }
