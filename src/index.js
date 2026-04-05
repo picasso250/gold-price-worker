@@ -1,5 +1,5 @@
 export default {
-  // 1. 定时任务：每 5 分钟抓取一次价格
+  // 1. 定时任务：每 10 分钟抓取一次价格
   async scheduled(event, env, ctx) {
     const fetchPrices = async () => {
       // 同时请求 USD 和 CNY 价格
@@ -96,7 +96,7 @@ function generateHTML(data) {
         <span class="value rmb">¥${data.gold_rmb}<span class="unit">/克</span></span>
       </div>
       <div class="footer">
-        <span class="status"></span> 每 5 分钟自动更新<br>
+        <span class="status"></span> 每 10 分钟自动更新<br>
         最后更新: ${data.updated_at}
       </div>
     </div>
