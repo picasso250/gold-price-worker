@@ -23,7 +23,7 @@ export default {
           btc: btcUsd.toLocaleString(),
           xaut: xautUsd.toLocaleString(),
           gold_rmb: goldRmbPerGram,
-          updated_at: new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })
+          updated_at: Date.now()
         };
 
         // 存入 KV 数据库
@@ -40,7 +40,7 @@ export default {
   // 2. 访问域名时的逻辑
   async fetch(request, env) {
     const priceData = await env.PRICE_STORAGE.get("latest_prices");
-    const data = JSON.parse(priceData || '{"btc":"加载中","xaut":"加载中","gold_rmb":"--","updated_at":"等待第一次更新"}');
+    const data = JSON.parse(priceData || '{"btc":"加载中","xaut":"加载中","gold_rmb":"--","updated_at":null}');
 
     if (request.headers.get("Accept")?.includes("text/html")) {
       return new Response(generateHTML(data), {
@@ -58,6 +58,8 @@ export default {
 };
 
 function generateHTML(data) {
+  const updatedAtTs = Number.isFinite(Number(data.updated_at)) ? Number(data.updated_at) : null;
+
   return `
   <!DOCTYPE html>
   <html>
@@ -97,9 +99,36 @@ function generateHTML(data) {
       </div>
       <div class="footer">
         <span class="status"></span> 每 10 分钟自动更新<br>
-        最后更新: ${data.updated_at}
+        最后更新: <span id="updated-at">等待第一次更新</span>
       </div>
     </div>
+    <script>
+      (function () {
+        const updatedAtEl = document.getElementById("updated-at");
+        const updatedAtTs = ${updatedAtTs === null ? "null" : updatedAtTs};
+
+        if (!updatedAtEl || updatedAtTs === null) {
+          return;
+        }
+
+        const diffMinutes = Math.floor((Date.now() - updatedAtTs) / 60000);
+        if (diffMinutes >= 0 && diffMinutes < 60) {
+          updatedAtEl.textContent = diffMinutes === 0 ? "刚刚" : diffMinutes + " 分钟之前";
+          return;
+        }
+
+        updatedAtEl.textContent = new Intl.DateTimeFormat("zh-CN", {
+          timeZone: "Asia/Shanghai",
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false
+        }).format(new Date(updatedAtTs));
+      })();
+    </script>
   </body>
   </html>
   `;
