@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Real-time Asset Prices</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#d4d4d4",
+                        "outline": "#767575",
+                        "tertiary-container": "#fee39c",
+                        "on-error-container": "#ff9993",
+                        "on-primary-fixed": "#4e3d00",
+                        "on-surface": "#e7e5e4",
+                        "surface-bright": "#2c2c2c",
+                        "on-surface-variant": "#acabaa",
+                        "primary-fixed-dim": "#f8d056",
+                        "secondary-container": "#3a3c3c",
+                        "tertiary-fixed": "#fee39c",
+                        "primary-fixed": "#ffe088",
+                        "on-primary-container": "#f4cc52",
+                        "secondary": "#9d9e9e",
+                        "error-dim": "#bb5551",
+                        "primary": "#e9c349",
+                        "tertiary-dim": "#f0d590",
+                        "on-primary": "#4f3e00",
+                        "inverse-primary": "#745c00",
+                        "error": "#ee7d77",
+                        "tertiary": "#fff2d9",
+                        "surface-dim": "#0e0e0e",
+                        "surface-container-high": "#1f2020",
+                        "on-tertiary-fixed": "#503f07",
+                        "surface-container-highest": "#252626",
+                        "surface-container-lowest": "#000000",
+                        "on-primary-fixed-variant": "#705900",
+                        "background": "#0e0e0e",
+                        "primary-container": "#574500",
+                        "on-tertiary-fixed-variant": "#6e5b23",
+                        "outline-variant": "#484848",
+                        "on-secondary-fixed-variant": "#5a5c5c",
+                        "inverse-on-surface": "#565555",
+                        "surface": "#0e0e0e",
+                        "primary-dim": "#dab53d",
+                        "surface-variant": "#252626",
+                        "on-secondary-fixed": "#3e3f40",
+                        "on-background": "#e7e5e4",
+                        "inverse-surface": "#fcf9f8",
+                        "error-container": "#7f2927",
+                        "secondary-fixed": "#e3e2e2",
+                        "surface-container-low": "#131313",
+                        "on-tertiary-container": "#645119",
+                        "surface-tint": "#e9c349",
+                        "secondary-dim": "#9d9e9e",
+                        "on-error": "#490106",
+                        "on-secondary-container": "#bfbfbf",
+                        "tertiary-fixed-dim": "#f0d590",
+                        "surface-container": "#191a1a",
+                        "on-secondary": "#1f2021",
+                        "on-tertiary": "#6d5a21"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0e0e0e;
+            position: relative;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.02;
+            pointer-events: none;
+            z-index: 9999;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        .tabular-nums {
+            font-variant-numeric: tabular-nums;
+        }
+        .glass-card {
+            backdrop-filter: blur(12px);
+            background: rgba(31, 32, 32, 0.6);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#0e0e0e] shadow-[0_20px_40px_rgba(0,0,0,0.6)]">
+<div class="flex justify-between items-center px-6 py-4 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#e9c349] leading-none" data-icon="menu">menu</span>
+<h1 class="font-headline tracking-tight font-light text-[#e9c349] text-lg lg:text-xl">Real-time Asset Prices</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-8 items-center">
+<a class="text-[#e9c349] font-label text-xs uppercase tracking-[0.2em] transition-colors" href="#">Market</a>
+<a class="text-[#e7e5e4]/60 hover:text-[#e9c349] font-label text-xs uppercase tracking-[0.2em] transition-colors" href="#">Assets</a>
+<a class="text-[#e7e5e4]/60 hover:text-[#e9c349] font-label text-xs uppercase tracking-[0.2em] transition-colors" href="#">Alerts</a>
+</nav>
+<span class="material-symbols-outlined text-[#e9c349] text-2xl" data-icon="account_circle">account_circle</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 pb-32 px-6 max-w-5xl mx-auto w-full">
+<div class="grid grid-cols-1 gap-8">
+<!-- Bitcoin Card -->
+<section class="surface-container-low rounded-xl p-8 transition-all hover:translate-y-[-2px]">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="space-y-2">
+<div class="flex items-center gap-3">
+<span class="bg-primary-container text-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">BTC / USD</span>
+<span class="text-on-surface-variant font-label text-xs tracking-tight">Bitcoin Core</span>
+</div>
+<h2 class="font-headline text-5xl md:text-7xl font-extrabold tracking-tighter tabular-nums text-on-surface">
+                            $67,243.50
+                        </h2>
+</div>
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<span class="font-label text-sm font-medium tracking-tight">+2.4%</span>
+</div>
+</div>
+<div class="mt-8 h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-primary-container w-[65%]"></div>
+</div>
+</section>
+<!-- Tether Gold Card -->
+<section class="surface-container-low rounded-xl p-8 transition-all hover:translate-y-[-2px]">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="space-y-2">
+<div class="flex items-center gap-3">
+<span class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">XAUT / USD</span>
+<span class="text-on-surface-variant font-label text-xs tracking-tight">Tether Gold Spot</span>
+</div>
+<h2 class="font-headline text-5xl md:text-7xl font-extrabold tracking-tighter tabular-nums text-on-surface">
+                            $2,342.10
+                        </h2>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="horizontal_rule">horizontal_rule</span>
+<span class="font-label text-sm font-medium tracking-tight">Stable</span>
+</div>
+</div>
+<div class="mt-8 h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-tertiary-fixed-dim to-tertiary-container w-[42%]"></div>
+</div>
+</section>
+<!-- Gold Card -->
+<section class="surface-container-low rounded-xl p-8 transition-all hover:translate-y-[-2px]">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="space-y-2">
+<div class="flex items-center gap-3">
+<span class="bg-secondary-container text-secondary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">GOLD / RMB</span>
+<span class="text-on-surface-variant font-label text-xs tracking-tight">Domestic Spot (g)</span>
+</div>
+<h2 class="font-headline text-5xl md:text-7xl font-extrabold tracking-tighter tabular-nums text-on-surface">
+                            ¥542.30
+                        </h2>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined text-sm" data-icon="trending_down">trending_down</span>
+<span class="font-label text-sm font-medium tracking-tight">-0.15%</span>
+</div>
+</div>
+<div class="mt-8 h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary-dim w-[88%]"></div>
+</div>
+</section>
+</div>
+<!-- Floating Quick Action (Metallic CTA) -->
+<button class="fixed bottom-24 right-6 md:right-12 z-40 bg-gradient-to-br from-[#e9c349] to-[#574500] text-[#0e0e0e] flex items-center gap-2 px-6 py-3 rounded-md shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:scale-105 active:scale-95 transition-all font-label font-bold text-xs uppercase tracking-widest">
+<span class="material-symbols-outlined text-base" data-icon="add">add</span>
+            Add Asset
+        </button>
+</main>
+<!-- Footer -->
+<footer class="w-full mb-20 bg-[#0e0e0e] mt-8 pt-4 border-t border-[#484848]/10">
+<div class="flex flex-col items-center gap-2 py-6">
+<div class="flex items-center gap-3 font-inter tabular-nums text-xs tracking-tighter text-[#e7e5e4] opacity-50">
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 bg-[#e9c349] rounded-full animate-pulse"></span>
+<span>Online</span>
+</div>
+<span>•</span>
+<span>Auto-updates every 10 mins</span>
+<span>•</span>
+<span>Last updated: 12 minutes ago</span>
+</div>
+<div class="flex gap-6 mt-2">
+<a class="text-[#e7e5e4] text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity" href="#">Privacy</a>
+<a class="text-[#e7e5e4] text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity" href="#">Terms</a>
+</div>
+</div>
+</footer>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full flex justify-around items-center px-4 py-3 pb-safe bg-[#0e0e0e]/80 backdrop-blur-xl border-t border-[#484848]/15 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] z-50 rounded-t-xl">
+<div class="flex flex-col items-center justify-center bg-gradient-to-br from-[#e9c349] to-[#574500] text-[#0e0e0e] rounded-lg px-6 py-1 active:scale-95 duration-200">
+<span class="material-symbols-outlined text-lg" data-icon="monitoring">monitoring</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.2em] mt-0.5">Market</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#e7e5e4]/40 hover:text-[#e9c349] transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.2em] mt-0.5">Assets</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#e7e5e4]/40 hover:text-[#e9c349] transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="notifications">notifications</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.2em] mt-0.5">Alerts</span>
+</div>
+</nav>
+</body></html>

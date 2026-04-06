@@ -1,44 +1,158 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html class="dark" lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>价格追踪 - io99.xyz</title>
+  <title>实时资产行情</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@300;400;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: "#0e0e0e",
+            surface: "#191a1a",
+            surfaceLow: "#131313",
+            surfaceHigh: "#1f2020",
+            surfaceHighest: "#252626",
+            outline: "#484848",
+            text: "#e7e5e4",
+            muted: "#acabaa",
+            primary: "#e9c349",
+            primaryDeep: "#574500",
+            primarySoft: "#f4cc52",
+            tertiarySoft: "#fee39c",
+            tertiaryText: "#645119",
+            secondarySoft: "#3a3c3c",
+            secondaryText: "#9d9e9e"
+          },
+          fontFamily: {
+            headline: ["Manrope", "sans-serif"],
+            body: ["Inter", "sans-serif"]
+          },
+          boxShadow: {
+            glow: "0 20px 40px rgba(0,0,0,0.45)"
+          }
+        }
+      }
+    };
+  </script>
   <style>
-    body { font-family: -apple-system, sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-    .card { background: #1e293b; padding: 2.5rem; border-radius: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); width: 90%; max-width: 400px; border: 1px solid #334155; }
-    h1 { font-size: 1.5rem; color: #94a3b8; margin-bottom: 2rem; text-align: center; }
-    .price-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-    .label { font-size: 1.1rem; color: #cbd5e1; }
-    .value { font-size: 1.8rem; font-weight: bold; font-variant-numeric: tabular-nums; }
-    .btc { color: #f59e0b; }
-    .xaut { color: #fbbf24; }
-    .rmb { color: #10b981; font-size: 1.8rem; }
-    .unit { font-size: 0.9rem; margin-left: 4px; color: #64748b; }
-    .footer { margin-top: 2rem; font-size: 0.8rem; color: #64748b; text-align: center; border-top: 1px solid #334155; padding-top: 1rem; }
-    .status { display: inline-block; width: 8px; height: 8px; background: #22c55e; border-radius: 50%; margin-right: 5px; box-shadow: 0 0 8px #22c55e; }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      opacity: 0.02;
+      pointer-events: none;
+      z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
   </style>
 </head>
-<body>
-  <div class="card">
-    <h1>实时资产行情</h1>
-    <div class="price-item">
-      <span class="label">Bitcoin</span>
-      <span class="value btc" id="btc">$加载中</span>
+<body class="min-h-screen bg-background font-body text-text antialiased">
+  <header class="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-background/95 backdrop-blur">
+    <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
+      <div class="flex items-center gap-4">
+        <span class="material-symbols-outlined text-primary">monitoring</span>
+        <div>
+          <p class="font-headline text-lg font-light tracking-tight text-primary md:text-xl">实时资产行情</p>
+          <p class="text-xs uppercase tracking-[0.24em] text-muted">Cloudflare Worker + KV</p>
+        </div>
+      </div>
+      <div class="hidden items-center gap-8 md:flex">
+        <span class="text-xs uppercase tracking-[0.24em] text-primary">Market</span>
+        <span class="text-xs uppercase tracking-[0.24em] text-white/40">Assets</span>
+        <span class="text-xs uppercase tracking-[0.24em] text-white/40">API</span>
+      </div>
     </div>
-    <div class="price-item">
-      <span class="label">黄金 (盎司)</span>
-      <span class="value xaut" id="xaut">$加载中</span>
+  </header>
+
+  <main class="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-8 px-6 pb-32 pt-24 md:pt-28">
+    <section class="rounded-xl bg-surfaceLow p-8 transition-all hover:-translate-y-0.5">
+      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div class="space-y-2">
+          <div class="flex items-center gap-3">
+            <span class="rounded-full bg-[#2a2100] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-primary">BTC / USD</span>
+            <span class="text-xs tracking-tight text-muted">Bitcoin</span>
+          </div>
+          <h2 id="btc" class="tabular-nums font-headline text-5xl font-extrabold tracking-tighter text-text md:text-7xl">$加载中</h2>
+        </div>
+        <div class="flex items-center gap-2 text-primary">
+          <span class="material-symbols-outlined text-sm">currency_bitcoin</span>
+          <span class="text-sm font-medium tracking-tight">核心资产</span>
+        </div>
+      </div>
+      <div class="mt-8 h-1 w-full overflow-hidden rounded-full bg-surfaceHighest">
+        <div class="h-full w-[72%] bg-gradient-to-r from-primary to-primaryDeep"></div>
+      </div>
+    </section>
+
+    <section class="rounded-xl bg-surfaceLow p-8 transition-all hover:-translate-y-0.5">
+      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div class="space-y-2">
+          <div class="flex items-center gap-3">
+            <span class="rounded-full bg-tertiarySoft px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-tertiaryText">XAUT / USD</span>
+            <span class="text-xs tracking-tight text-muted">Tether Gold</span>
+          </div>
+          <h2 id="xaut" class="tabular-nums font-headline text-5xl font-extrabold tracking-tighter text-text md:text-7xl">$加载中</h2>
+        </div>
+        <div class="flex items-center gap-2 text-[#d6bd76]">
+          <span class="material-symbols-outlined text-sm">diamond</span>
+          <span class="text-sm font-medium tracking-tight">黄金锚定</span>
+        </div>
+      </div>
+      <div class="mt-8 h-1 w-full overflow-hidden rounded-full bg-surfaceHighest">
+        <div class="h-full w-[48%] bg-gradient-to-r from-[#e8d28d] to-tertiarySoft"></div>
+      </div>
+    </section>
+
+    <section class="rounded-xl bg-surfaceLow p-8 transition-all hover:-translate-y-0.5">
+      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div class="space-y-2">
+          <div class="flex items-center gap-3">
+            <span class="rounded-full bg-secondarySoft px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-secondaryText">GOLD / RMB</span>
+            <span class="text-xs tracking-tight text-muted">人民币克价</span>
+          </div>
+          <h2 id="gold-rmb" class="tabular-nums font-headline text-5xl font-extrabold tracking-tighter text-text md:text-7xl">¥--<span class="ml-1 text-xl font-medium text-muted md:text-2xl">/克</span></h2>
+        </div>
+        <div class="flex items-center gap-2 text-[#a8d1bb]">
+          <span class="material-symbols-outlined text-sm">toll</span>
+          <span class="text-sm font-medium tracking-tight">本地参考价</span>
+        </div>
+      </div>
+      <div class="mt-8 h-1 w-full overflow-hidden rounded-full bg-surfaceHighest">
+        <div class="h-full w-[84%] bg-gradient-to-r from-[#3d4d45] to-[#83b192]"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="relative z-10 mb-20 border-t border-white/5 bg-background px-6 py-6 md:mb-0">
+    <div class="mx-auto flex max-w-5xl flex-col gap-3 text-xs tracking-tight text-white/55 md:flex-row md:items-center md:justify-between">
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="flex items-center gap-2">
+          <span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
+          <span>Online</span>
+        </span>
+        <span class="hidden md:inline">•</span>
+        <span>每 10 分钟自动更新</span>
+        <span class="hidden md:inline">•</span>
+        <span>最后更新: <span id="updated-at">加载中</span></span>
+      </div>
+      <div class="text-[10px] uppercase tracking-[0.24em] text-white/35">
+        Gold Price Worker
+      </div>
     </div>
-    <div class="price-item">
-      <span class="label">黄金 (RMB)</span>
-      <span class="value rmb" id="gold-rmb">¥--<span class="unit">/克</span></span>
-    </div>
-    <div class="footer">
-      <span class="status"></span> 每 10 分钟自动更新<br>
-      最后更新: <span id="updated-at">加载中</span>
-    </div>
-  </div>
+  </footer>
+
   <script>
     function formatUpdatedAt(updatedAtTs) {
       if (!Number.isFinite(updatedAtTs)) {
@@ -71,7 +185,7 @@
       const data = await response.json();
       document.getElementById("btc").textContent = "$" + (data.btc ?? "加载中");
       document.getElementById("xaut").textContent = "$" + (data.xaut ?? "加载中");
-      document.getElementById("gold-rmb").innerHTML = "¥" + (data.gold_rmb ?? "--") + '<span class="unit">/克</span>';
+      document.getElementById("gold-rmb").innerHTML = "¥" + (data.gold_rmb ?? "--") + '<span class="ml-1 text-xl font-medium text-muted md:text-2xl">/克</span>';
       document.getElementById("updated-at").textContent = formatUpdatedAt(Number(data.updated_at));
     }
 
