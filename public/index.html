@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>价格追踪 - io99.xyz</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+    .card { background: #1e293b; padding: 2.5rem; border-radius: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); width: 90%; max-width: 400px; border: 1px solid #334155; }
+    h1 { font-size: 1.5rem; color: #94a3b8; margin-bottom: 2rem; text-align: center; }
+    .price-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .label { font-size: 1.1rem; color: #cbd5e1; }
+    .value { font-size: 1.8rem; font-weight: bold; font-variant-numeric: tabular-nums; }
+    .btc { color: #f59e0b; }
+    .xaut { color: #fbbf24; }
+    .rmb { color: #10b981; font-size: 1.8rem; }
+    .unit { font-size: 0.9rem; margin-left: 4px; color: #64748b; }
+    .footer { margin-top: 2rem; font-size: 0.8rem; color: #64748b; text-align: center; border-top: 1px solid #334155; padding-top: 1rem; }
+    .status { display: inline-block; width: 8px; height: 8px; background: #22c55e; border-radius: 50%; margin-right: 5px; box-shadow: 0 0 8px #22c55e; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>实时资产行情</h1>
+    <div class="price-item">
+      <span class="label">Bitcoin</span>
+      <span class="value btc" id="btc">$加载中</span>
+    </div>
+    <div class="price-item">
+      <span class="label">黄金 (盎司)</span>
+      <span class="value xaut" id="xaut">$加载中</span>
+    </div>
+    <div class="price-item">
+      <span class="label">黄金 (RMB)</span>
+      <span class="value rmb" id="gold-rmb">¥--<span class="unit">/克</span></span>
+    </div>
+    <div class="footer">
+      <span class="status"></span> 每 10 分钟自动更新<br>
+      最后更新: <span id="updated-at">加载中</span>
+    </div>
+  </div>
+  <script>
+    function formatUpdatedAt(updatedAtTs) {
+      if (!Number.isFinite(updatedAtTs)) {
+        return "等待第一次更新";
+      }
+
+      const diffMinutes = Math.floor((Date.now() - updatedAtTs) / 60000);
+      if (diffMinutes >= 0 && diffMinutes < 60) {
+        return diffMinutes === 0 ? "刚刚" : diffMinutes + " 分钟之前";
+      }
+
+      return new Intl.DateTimeFormat("zh-CN", {
+        timeZone: "Asia/Shanghai",
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      }).format(new Date(updatedAtTs));
+    }
+
+    async function loadPrices() {
+      const response = await fetch("/api/prices");
+      if (!response.ok) {
+        throw new Error("加载价格失败");
+      }
+
+      const data = await response.json();
+      document.getElementById("btc").textContent = "$" + (data.btc ?? "加载中");
+      document.getElementById("xaut").textContent = "$" + (data.xaut ?? "加载中");
+      document.getElementById("gold-rmb").innerHTML = "¥" + (data.gold_rmb ?? "--") + '<span class="unit">/克</span>';
+      document.getElementById("updated-at").textContent = formatUpdatedAt(Number(data.updated_at));
+    }
+
+    loadPrices().catch(() => {
+      document.getElementById("updated-at").textContent = "加载失败";
+    });
+  </script>
+</body>
+</html>
