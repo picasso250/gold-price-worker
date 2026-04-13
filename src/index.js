@@ -7,8 +7,15 @@ export default {
       const attemptedAt = Date.now();
 
       try {
+        if (!env.COINGECKO_DEMO_API_KEY) {
+          throw new Error("缺少 COINGECKO_DEMO_API_KEY");
+        }
+
         const response = await fetch(url, {
-          headers: { "User-Agent": "Cloudflare-Worker-Gold-Bot" }
+          headers: {
+            "User-Agent": "Cloudflare-Worker-Gold-Bot",
+            "x-cg-demo-api-key": env.COINGECKO_DEMO_API_KEY
+          }
         });
         if (!response.ok) {
           throw new Error("上游返回异常状态: " + response.status);
