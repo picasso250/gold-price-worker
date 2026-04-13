@@ -156,9 +156,14 @@
   </footer>
 
   <script>
-    function formatTimestamp(timestamp) {
-      if (!Number.isFinite(timestamp)) {
-        return "等待第一次更新";
+    function formatTimestamp(value, emptyText) {
+      if (value === null || value === undefined || value === "") {
+        return emptyText;
+      }
+
+      const timestamp = Number(value);
+      if (!Number.isFinite(timestamp) || timestamp <= 0) {
+        return emptyText;
       }
 
       const diffMinutes = Math.floor((Date.now() - timestamp) / 60000);
@@ -188,8 +193,8 @@
       document.getElementById("btc").textContent = "$" + (data.btc ?? "加载中");
       document.getElementById("xaut").textContent = "$" + (data.xaut ?? "加载中");
       document.getElementById("gold-rmb").innerHTML = "¥" + (data.gold_rmb ?? "--") + '<span class="ml-1 text-xl font-medium text-muted md:text-2xl">/克</span>';
-      document.getElementById("last-attempt-at").textContent = formatTimestamp(Number(data.last_attempt_at));
-      document.getElementById("last-success-at").textContent = formatTimestamp(Number(data.last_success_at));
+      document.getElementById("last-attempt-at").textContent = formatTimestamp(data.last_attempt_at, "等待第一次尝试");
+      document.getElementById("last-success-at").textContent = formatTimestamp(data.last_success_at, "等待第一次成功");
     }
 
     loadPrices().catch(() => {
