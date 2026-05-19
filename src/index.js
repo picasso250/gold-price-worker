@@ -44,7 +44,7 @@ export default {
         };
 
         await env.PRICE_STORAGE.put("latest_prices", JSON.stringify(result));
-        console.log("价格已更新 (含人民币克价):", result);
+
       } catch (e) {
         const staleResult = {
           btc: previousData.btc ?? "加载中",

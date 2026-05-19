@@ -76,60 +76,48 @@
     </div>
   </header>
 
-  <main class="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-8 px-6 py-8">
-    <section class="rounded-xl bg-surfaceLow p-8 transition-all hover:-translate-y-0.5">
+  <main class="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-4 px-5 py-5 md:gap-8 md:px-6 md:py-8">
+    <section class="rounded-xl bg-surfaceLow p-5 transition-all hover:-translate-y-0.5 md:p-8">
       <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div class="space-y-2">
           <div class="flex items-center gap-3">
             <span class="rounded-full bg-[#2a2100] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-primary">BTC / USD</span>
             <span class="text-xs tracking-tight text-muted">Bitcoin</span>
           </div>
-          <h2 id="btc" class="tabular-nums font-headline text-5xl font-extrabold tracking-tighter text-text md:text-7xl">$加载中</h2>
-        </div>
-        <div class="flex items-center gap-2 text-primary">
-          <span class="material-symbols-outlined text-sm">currency_bitcoin</span>
-          <span class="text-sm font-medium tracking-tight">核心资产</span>
+          <h2 id="btc" class="tabular-nums font-headline text-4xl font-extrabold tracking-tighter text-text md:text-7xl">$加载中</h2>
         </div>
       </div>
-      <div class="mt-8 h-1 w-full overflow-hidden rounded-full bg-surfaceHighest">
+      <div class="mt-5 h-1 w-full overflow-hidden rounded-full bg-surfaceHighest md:mt-8">
         <div class="h-full w-[72%] bg-gradient-to-r from-primary to-primaryDeep"></div>
       </div>
     </section>
 
-    <section class="rounded-xl bg-surfaceLow p-8 transition-all hover:-translate-y-0.5">
+    <section class="rounded-xl bg-surfaceLow p-5 transition-all hover:-translate-y-0.5 md:p-8">
       <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div class="space-y-2">
           <div class="flex items-center gap-3">
             <span class="rounded-full bg-tertiarySoft px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-tertiaryText">XAUT / USD</span>
             <span class="text-xs tracking-tight text-muted">Tether Gold</span>
           </div>
-          <h2 id="xaut" class="tabular-nums font-headline text-5xl font-extrabold tracking-tighter text-text md:text-7xl">$加载中</h2>
-        </div>
-        <div class="flex items-center gap-2 text-[#d6bd76]">
-          <span class="material-symbols-outlined text-sm">diamond</span>
-          <span class="text-sm font-medium tracking-tight">黄金锚定</span>
+          <h2 id="xaut" class="tabular-nums font-headline text-4xl font-extrabold tracking-tighter text-text md:text-7xl">$加载中</h2>
         </div>
       </div>
-      <div class="mt-8 h-1 w-full overflow-hidden rounded-full bg-surfaceHighest">
+      <div class="mt-5 h-1 w-full overflow-hidden rounded-full bg-surfaceHighest md:mt-8">
         <div class="h-full w-[48%] bg-gradient-to-r from-[#e8d28d] to-tertiarySoft"></div>
       </div>
     </section>
 
-    <section class="rounded-xl bg-surfaceLow p-8 transition-all hover:-translate-y-0.5">
+    <section class="rounded-xl bg-surfaceLow p-5 transition-all hover:-translate-y-0.5 md:p-8">
       <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div class="space-y-2">
           <div class="flex items-center gap-3">
             <span class="rounded-full bg-secondarySoft px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-secondaryText">GOLD / RMB</span>
             <span class="text-xs tracking-tight text-muted">人民币克价</span>
           </div>
-          <h2 id="gold-rmb" class="tabular-nums font-headline text-5xl font-extrabold tracking-tighter text-text md:text-7xl">¥--<span class="ml-1 text-xl font-medium text-muted md:text-2xl">/克</span></h2>
-        </div>
-        <div class="flex items-center gap-2 text-[#a8d1bb]">
-          <span class="material-symbols-outlined text-sm">toll</span>
-          <span class="text-sm font-medium tracking-tight">本地参考价</span>
+          <h2 id="gold-rmb" class="tabular-nums font-headline text-4xl font-extrabold tracking-tighter text-text md:text-7xl">¥--<span class="ml-1 text-lg font-medium text-muted md:text-2xl">/克</span></h2>
         </div>
       </div>
-      <div class="mt-8 h-1 w-full overflow-hidden rounded-full bg-surfaceHighest">
+      <div class="mt-5 h-1 w-full overflow-hidden rounded-full bg-surfaceHighest md:mt-8">
         <div class="h-full w-[84%] bg-gradient-to-r from-[#3d4d45] to-[#83b192]"></div>
       </div>
     </section>
@@ -143,7 +131,7 @@
           <span>Online</span>
         </span>
         <span class="hidden md:inline">•</span>
-        <span>每 10 分钟自动更新</span>
+        <span>每 1 小时自动更新</span>
         <span class="hidden md:inline">•</span>
         <span>最后尝试: <span id="last-attempt-at">加载中</span></span>
         <span class="hidden md:inline">•</span>
